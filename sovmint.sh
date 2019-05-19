@@ -7,8 +7,8 @@
 #       Source: https://github.com/bocharnikov/                                         |
 #                                                                                       |
 #       Files: sovmint.sh                                                               |
-#       Build: 120618                                                                   |
-#       Copyright: 2018 Bocharnikov Sergei                                              |
+#       Build: 190519                                                                   |
+#       Copyright: 2019 Bocharnikov Sergei                                              |
 #--------------------------------[ License: MIT ]---------------------------------------+
 #                                                                                       |
 #---------------------------------------------------------------------------------------+
@@ -34,19 +34,20 @@ DIR=/mnt2/sovmint/
 WGET_LOG=/mnt2/sovmint/sovmint_wget.log
 OLD_URL=/mnt2/sovmint/sovmint_oldurl.log
 
+echo "LetsGO!" >"${OLD_URL}"
 
-GET_URL=`curl -s http://sovmint.ru/cennik/ | grep 'width="33%"' | egrep -o 'http://sovmint.ru/taganskij[0-9a-z-]*/' | sort -u`
+GET_URL=`curl -s https://sovmint.ru/cennik/ | grep 'width="33%"' | egrep -o 'http://sovmint.ru/taganskij[0-9a-z-]*/' | sort -u | sed 's/http/https/'`
 
 
-GET_PIC_1=`curl -s "$GET_URL" | grep -o "http[^>]*.jpg" | grep download | head -n 1`
-GET_PIC_2=`curl -s "$GET_URL" | grep -o "http[^>]*.jpg" | grep download | tail -n 1`
+GET_PIC_1=`curl -s "$GET_URL" | grep -o "https[^>]*.jpg" | grep download | head -n 1`
+GET_PIC_2=`curl -s "$GET_URL" | grep -o "https[^>]*.jpg" | grep download | tail -n 1`
 
 
 while read line; do
 
     if [[ "$line" != "$GET_URL" ]];
 	then
-	wget -P $DIR --user-agent="Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36" "$GET_PIC_1" "$GET_PIC_2" -a $WGET_LOG >> $WGET_LOG
+	wget -P $DIR --user-agent="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36 OPR/60.0.3255.95" "$GET_PIC_1" "$GET_PIC_2" -a $WGET_LOG >> $WGET_LOG
     fi
 
 done < "${OLD_URL}"
